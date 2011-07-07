@@ -54,7 +54,7 @@ import org.bukkit.plugin.PluginManager;
 	        if (!new File(dir + File.separator + "MiningTNT.properties").exists()) {
 	            FileWriter writer = null;
 	            try {
-	                writer = new FileWriter("MiningTNT.properties");
+	                writer = new FileWriter(dir + File.separator + "MiningTNT.properties");
 	                writer.write("#Mining TNTn\r\n");
 	                writer.write("#Add item ID's sparated by spaces for them to be affected by TNT.\r\n");
 	                writer.write("#Example:\r\n");
