@@ -23,9 +23,9 @@ import org.bukkit.plugin.PluginManager;
 	    private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 	    private Logger log;
 	    public static List<String> destroy = new ArrayList<String>();
-	    double max;
+	    double max, yield;
 	    public static boolean isConflict=false;
-	    boolean creeper,miningCreeper;
+	    boolean creeper,miningCreeper,chain;
 	    
 	    private void checkForConflict()
 	    {
@@ -50,19 +50,24 @@ import org.bukkit.plugin.PluginManager;
 	        checkForConflict();
 	    }
 	    public void loadSettings() {
-	        String folderDir = "";
-	        if (!new File("MiningTNT.properties").exists()) {
+	    	final String dir = "plugins/MiningTNT";
+	        if (!new File(dir + File.separator + "MiningTNT.properties").exists()) {
 	            FileWriter writer = null;
 	            try {
 	                writer = new FileWriter("MiningTNT.properties");
-	                writer.write("Mining TNT v 0.1 configuration\r\n");
-	                writer.write("Add item ID's sparated by spaces for them to be affected by TNT.\r\n");
-	                writer.write("Example:\r\n");
-	                writer.write("//DestroyTheseBlocks=1 2 3 4 17\r\n");
+	                writer.write("#Mining TNTn\r\n");
+	                writer.write("#Add item ID's sparated by spaces for them to be affected by TNT.\r\n");
+	                writer.write("#Example:\r\n");
+	                writer.write("#DestroyTheseBlocks=1 2 3 4 17\r\n");
 	                writer.write("DestroyTheseBlocks=\r\n");
 	                writer.write("MaxAltitude=70\r\n");
+	                writer.write("#CreeperNerf MUST be enabled if CreepersActLikeTNT is enabled.");
 	                writer.write("CreeperNerf=true\r\n");
 	                writer.write("CreepersActLikeTNT=false\r\n");
+	                writer.write("#Allow TNT to activate other TNT within the blast radius, otherwise the TNT will be destroyed.\r\n");
+	                writer.write("AllowTNTChaining=true\r\n");
+	                writer.write("#Yield is the percentage that the block is dropped rather than destroyed when in blast radius. Anything above 1 will be assumed to be 1.\r\n");
+	                writer.write("Yield=0.4\r\n");
 	                
 	                
 	                } catch (Exception e) {
@@ -92,13 +97,14 @@ import org.bukkit.plugin.PluginManager;
 	            }
 	        }
 	        
-	        PropertiesFile properties = new PropertiesFile(folderDir
-	                + "MiningTNT.properties");
+	        PropertiesFile properties = new PropertiesFile(dir + File.separator + "MiningTNT.properties");
 	        try {
 	          destroy = Arrays.asList(properties.getString("DestroyTheseBlocks", "").split(" "));
 	          max = properties.getDouble("MaxAltitude", 70);
 	          creeper = properties.getBoolean("CreeperNerf", true);
 	          miningCreeper = properties.getBoolean("CreepersActLikeTNT", false);
+	          chain = properties.getBoolean("AllowTNTChaining", true);
+	          yield = properties.getDouble("Yield", 0.4);
 	        } catch (Exception e) {
 	            log.log(Level.SEVERE,
 	                    "Exception while reading from MiningTNT.properties", e);

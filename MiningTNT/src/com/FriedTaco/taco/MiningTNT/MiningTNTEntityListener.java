@@ -4,6 +4,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.block.*;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -104,13 +105,11 @@ public class MiningTNTEntityListener extends EntityListener implements Cancellab
     				if(Id != -1)
     				{
     					if(block.getTypeId() == 21)
-    					{
     		    			item.setDurability((short) 4);
-    					}
-    					if(!MiningTNT.isConflict || (Math.random() < event.getYield()))
-    					{
+    					if(block.getTypeId() == 46 && plugin.chain)
+    						block.getWorld().spawn(pos,TNTPrimed.class);
+    					else if(!MiningTNT.isConflict && (Math.random() < plugin.yield))
     						block.getWorld().dropItemNaturally(pos, item);
-    					}
     				}
     				block.setTypeId(0);
     			}
