@@ -5,13 +5,15 @@ import org.bukkit.Location;
 import org.bukkit.block.*;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.TNTPrimed;
-import org.bukkit.event.Cancellable;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.inventory.ItemStack;
 
 
 
-public class MiningTNTEntityListener extends EntityListener implements Cancellable
+public class MiningTNTEntityListener implements Listener
 {
 	int r = 2;
 	
@@ -85,6 +87,10 @@ public class MiningTNTEntityListener extends EntityListener implements Cancellab
     	{
     		return;
     	}
+    	try{
+    	event.getEntity().getWorld().createExplosion(event.getLocation(), 0);
+    	}catch(Exception e){
+    	}
     	event.setCancelled(true);
     	List<Block> blocks = event.blockList();
     	for(int i=0; i< blocks.size(); i++)
@@ -117,6 +123,7 @@ public class MiningTNTEntityListener extends EntityListener implements Cancellab
     		
     	}
     }
+    @EventHandler(priority = EventPriority.HIGH)
     public void onEntityExplode(EntityExplodeEvent event)
     {
     	if(event.getEntity() instanceof Creeper)
@@ -136,13 +143,11 @@ public class MiningTNTEntityListener extends EntityListener implements Cancellab
     	}
     }
 
-	@Override
 	public boolean isCancelled() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public void setCancelled(boolean arg0) {
 		// TODO Auto-generated method stub
 		

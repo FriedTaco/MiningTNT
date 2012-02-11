@@ -6,21 +6,19 @@ package com.FriedTaco.taco.MiningTNT;
 	import java.io.File;
 	import java.io.FileWriter;
 	import java.io.IOException;
-import java.util.ArrayList;
+	import java.util.ArrayList;
 	import java.util.Arrays;
 	import java.util.HashMap;
 	import org.bukkit.entity.Player;
-	import org.bukkit.event.Event.Priority;
-	import org.bukkit.event.Event;
-import org.bukkit.plugin.Plugin;
+	import org.bukkit.plugin.Plugin;
 	import org.bukkit.plugin.PluginDescriptionFile;
 	import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.PluginManager;
+	import org.bukkit.plugin.PluginManager;
+
 
 
 
 	public class MiningTNT extends JavaPlugin { 
-	    private final MiningTNTEntityListener entityListener = new MiningTNTEntityListener(this);
 	    private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 	    private Logger log = Logger.getLogger("Minecraft");
 	    public static List<String> destroy = new ArrayList<String>();
@@ -44,7 +42,7 @@ import org.bukkit.plugin.PluginManager;
 
 	    public void onEnable() {
 	        PluginManager pm = getServer().getPluginManager();
-	        pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.High, this);
+	        pm.registerEvents(new MiningTNTEntityListener(this), this);
 	        PluginDescriptionFile pdfFile = this.getDescription();
 	        System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
 	        try {
