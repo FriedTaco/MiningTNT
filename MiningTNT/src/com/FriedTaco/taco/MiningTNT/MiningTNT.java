@@ -21,7 +21,7 @@ package com.FriedTaco.taco.MiningTNT;
 	public class MiningTNT extends JavaPlugin { 
 	    private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 	    private Logger log = Logger.getLogger("Minecraft");
-	    public static List<String> destroy = new ArrayList<String>();
+	    public List<String> destroy = new ArrayList<String>();
 	    double max, yield;
 	    public static boolean isConflict=false;
 	    boolean creeper,miningCreeper,chain;

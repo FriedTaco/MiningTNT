@@ -1,6 +1,7 @@
 package com.FriedTaco.taco.MiningTNT;
 
 import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.block.*;
 import org.bukkit.entity.Creeper;
@@ -9,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
-import org.bukkit.inventory.ItemStack;
 
 
 
@@ -20,8 +20,8 @@ public class MiningTNTEntityListener implements Listener
 
 	private final MiningTNT plugin;
 
-    public MiningTNTEntityListener(final MiningTNT plugin) {
-        this.plugin = plugin;
+    public MiningTNTEntityListener(final MiningTNT instance) {
+        plugin = instance;
     }
     public int getAmount(Block block)
     {
@@ -87,40 +87,52 @@ public class MiningTNTEntityListener implements Listener
     	{
     		return;
     	}
-    	try{
-    	event.getEntity().getWorld().createExplosion(event.getLocation(), 0);
-    	}catch(Exception e){
+    	else if(event.getEntity()==null)
+    	{
+    		return;
     	}
+    	event.getLocation().getWorld().createExplosion(event.getLocation(), 0.0F);
     	event.setCancelled(true);
     	List<Block> blocks = event.blockList();
     	for(int i=0; i< blocks.size(); i++)
     	{
-    		if(blocks.get(i) == null)
+    		Block block = blocks.get(i);
+    		if(block!=null)
     		{
+	    		if(plugin.destroy.contains(Integer.toString(block.getTypeId())) && block.getTypeId() != 0  && block.getY() < plugin.max)
+	    		{    			
+	    			
+	    			Location pos = block.getLocation();
+	    			if(block.getTypeId()==46)
+	    			{
+	    				block.getWorld().spawn(pos,TNTPrimed.class);
+	    				block.breakNaturally();
+	    			}
+	    			if((Math.random() < plugin.yield))
+	    				block.breakNaturally();
+	    			/* This is no longer needed.
+	    			Block block = blocks.get(i);
+	    			Location pos = block.getLocation();
+	    			int Id = getDrop(block);
+	    			int amount = getAmount(block);
+	    			ItemStack item = new ItemStack(Id, amount);
+	    			
+	    			if(Id != 0)
+	    			{
+	    				if(Id != -1)
+	    				{
+	    					if(block.getTypeId() == 21)
+	    		    			item.setDurability((short) 4);
+	    					if(block.getTypeId() == 46 && plugin.chain)
+	    						block.getWorld().spawn(pos,TNTPrimed.class);
+	    					else if(!MiningTNT.isConflict && (Math.random() < plugin.yield))
+	    						block.getWorld().dropItemNaturally(pos, item);
+	    				}
+	    				block.setTypeId(0);
+	    			}
+	    			*/
+	    		}
     		}
-    		else if(com.FriedTaco.taco.MiningTNT.MiningTNT.destroy.contains(Integer.toString(blocks.get(i).getTypeId())) && blocks.get(i).getTypeId() != 0  && blocks.get(i).getY() < plugin.max)
-    		{
-    			Block block = blocks.get(i);
-    			Location pos = block.getLocation();
-    			int Id = getDrop(block);
-    			int amount = getAmount(block);
-    			ItemStack item = new ItemStack(Id, amount);
-    			
-    			if(Id != 0)
-    			{
-    				if(Id != -1)
-    				{
-    					if(block.getTypeId() == 21)
-    		    			item.setDurability((short) 4);
-    					if(block.getTypeId() == 46 && plugin.chain)
-    						block.getWorld().spawn(pos,TNTPrimed.class);
-    					else if(!MiningTNT.isConflict && (Math.random() < plugin.yield))
-    						block.getWorld().dropItemNaturally(pos, item);
-    				}
-    				block.setTypeId(0);
-    			}
-    		}
-    		
     	}
     }
     @EventHandler(priority = EventPriority.HIGH)
